@@ -1,0 +1,168 @@
+﻿
+@using Playland.Database.Model
+@using System.Linq
+@using System.Collections.Generic
+@{
+    int count = 0;
+    List<CardUpload> cardUploads = Model;
+}
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dataTable = $('#dtTable').DataTable({
+            "searching": false,
+            "paging": false,
+            "ordering": false,
+        });
+
+
+        var detailRows = [];
+
+        $('#dtTable tbody').on('click', 'tr td.details-control', function () {
+
+            var tr = $(this).closest('tr');
+            var row = dataTable.row(tr);
+            var idx = $.inArray(tr.attr('id'), detailRows);
+            if (row.child.isShown()) {
+                tr.removeClass('details');
+                row.child.hide();
+                // Remove from the 'open' array
+                detailRows.splice(idx, 1);
+            }
+            else {
+                tr.addClass('details');
+                row.child(format(row.data())).show();
+                // Add to the 'open' array
+                if (idx === -1) {
+                    detailRows.push(tr.attr('id'));
+                }
+            }
+        });
+
+        // On each draw, loop over the `detailRows` array and show any child rows
+        dataTable.on('draw', function () {
+            $.each(detailRows, function (i, id) {
+                $('#' + id + ' td.details-control').trigger('click');
+            });
+        });
+
+    });
+
+    function format(d) {
+        var jsonResult = JSON.parse(d[5]);
+        var html = "<table class='table table-bordered'>";
+        html = html + "<thead>";
+        html = html + "<tr style='background-color:#ffe6e0;'><td>Yükleme Tutar</td><td>Tarih</td></tr>";
+        html = html + "</thead>";
+
+        html = html + "<tbody>";
+        html = html + "<tr>";
+
+        for (var i = 0; i < jsonResult.length; i++) {
+            html = html + "<tr>";
+            html = html + "<td>" + formatDecimalToMoney(jsonResult[i].Amount) + "</td>";
+            html = html + "<td>" + jsonResult[i].CreationDate + "</td>";
+            html = html + "</tr>";
+        }
+
+        html = html + "</tr>";
+        html = html + "</tbody>";
+        html = html + "</table>";
+        return html;
+    }
+
+</script>
+
+
+<style>
+
+
+    @@media (max-width: 800px) 
+    {
+
+    }
+</style>
+
+@model List<CardUpload>
+
+
+    <div class="col-md-12">
+        <table style="width:100%" class="table table-bordered">
+            <thead>
+                <tr>
+                    <td><strong>Y.Kart</strong></td>
+                    <td><strong>E.Kart</strong></td>
+                    <td><strong>Y.Kart Yükleme</strong></td>
+                    <td><strong>E.Kart Yükleme</strong></td>
+                    <td><strong>Toplam Yükleme Tutar</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @{
+
+                        int totalUpload = cardUploads.Count;
+                        int newCardUpload = cardUploads.Where(f => f.IsNewCard == true).ToList().Count;
+                        decimal totalUploadAmount = cardUploads.Sum(f => f.Amount);
+                        decimal newCardUploadAmount = cardUploads.Where(f => f.IsNewCard == true).Sum(f => f.Amount);
+                        int res = totalUpload - newCardUpload;
+                        decimal resAmount = totalUploadAmount - newCardUploadAmount;
+                    }
+                    <td>@newCardUpload</td>
+                    <td>
+                        @res
+                    </td>
+                    <td>@newCardUploadAmount.ToString("n2")</td>
+                    <td>
+                        @resAmount.ToString("n2")
+                    </td>
+                    <td>@totalUploadAmount.ToString("n2")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table style="width:100%" id="dtTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>#</td>
+                    <td><strong>Kart No</strong></td>
+                    <td><strong>Adet</strong></td>
+                    <td><strong>Yükleme</strong></td>
+                    <td style="display:none"></td>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (CardUpload item in Model)
+                {
+                    count = count + 1;
+                    <tr>
+                        <td class="details-control"></td>
+                        <td>@count</td>
+                        @if (!item.IsNewCard)
+                        {
+                            <td>@string.Format("{0}", item.CardUID)</td>
+                        }
+                        else
+                        {
+                            <td>@string.Format("{0}", item.CardUID)&nbsp;<span style="color:red;font-weight:bold;">*</span></td>
+                        }
+
+                        <td>@string.Format("{0}", item.Quantity)</td>
+                        <td>@string.Format("{0}", item.Amount.ToString("n2"))</td>
+                        <td style="display:none">
+                            @Html.Raw(Json.Encode(@item.Transactions))
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+

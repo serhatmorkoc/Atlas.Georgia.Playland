@@ -1,0 +1,92 @@
+﻿@{
+    Layout = null;
+}
+
+@model Playland.Database.Model.User
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Playland</title>
+
+    @Html.Partial("~/Views/Shared/_WebMasterCssCommon.cshtml")
+    @Html.Partial("~/Views/Shared/_WebMasterJsCommon.cshtml")
+
+    <style>
+        .field-validation-error {
+            color: red;
+            font-size:11px;
+        }
+    </style>
+
+    <script>
+        var _dashboardOperations;
+        $(function () {
+            _dashboardOperations = new DashboardOperations();
+        })
+    </script>
+
+</head>
+<body>
+
+
+    @{
+        var actionName = "PostLogin";
+        var controllerName = "Home";
+        var onBeginDefault = "OnMvcAjaxBegin";
+        var onFailureDefault = "OnMvcAjaxFailure";
+        var onCompletedDefault = "OnMvcAjaxCompleted";
+        var onSuccess = "_dashboardOperations.OnPostLoginSucceed";
+        var httpMethodType = "POST";
+        var formId = "frmLogin";
+    }
+
+
+    @Html.Partial("~/Views/Shared/_AjaxDefaultLoaderPartial.cshtml")
+
+
+    <div class="bg-homepage">
+        <div class="container">
+            <div class="login-box">
+                <div class="cell-style">
+                    <div class="login-item">
+                        <div class="login_logo">
+                            <img src="~/images/logo-login.png" alt="">
+                        </div>
+
+
+                        @using (Ajax.BeginForm(actionName, controllerName,
+                                new AjaxOptions()
+                                {
+                                    HttpMethod = httpMethodType,
+                                    OnBegin = onBeginDefault,
+                                    OnComplete = onCompletedDefault,
+                                    OnFailure = onFailureDefault,
+                                    OnSuccess = onSuccess,
+                                }, new { name = formId, id = formId }))
+                        {
+
+                            @Html.ValidationMessageFor(f => f.Username)
+                            @Html.TextBoxFor(f => f.Username, new { @class = "form-control", placeholder = "Kullanıcı Adı" })
+
+                            @Html.ValidationMessageFor(f => f.Password)
+                            @Html.PasswordFor(f => f.Password, new { @class = "form-control", placeholder = "Şifre" })
+
+                            <button type="submit" class="btn btn-success">Giriş</button>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <img src="~/images/footer_atlas_logo.png" alt="">
+            <img src="~/images/footer_merocity_logo.png" alt="">
+        </footer>
+
+    </div>
+</body>
+</html>

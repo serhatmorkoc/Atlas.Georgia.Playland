@@ -1,0 +1,132 @@
+/* ----------------------------------------------------------------
+	Responsive CSS
+-----------------------------------------------------------------*/
+
+@media (max-width: 1199px) {
+
+.pd-lr-150 {
+	padding: 0;
+}
+
+}
+
+
+@media (min-width: 992px) and (max-width: 1199px) {
+
+}
+
+
+@media (max-width: 991px) {
+
+	.login-item {
+		width: 90%;
+		padding: 70px 20px 50px 20px;
+	}
+
+	.login_logo {
+		margin-left: -80px;
+		top: -70px;
+	}
+
+	.login_logo img {
+		width: 160px;
+	}
+
+}
+
+
+@media (min-width: 768px) and (max-width: 991px) {
+    
+
+    
+    .display-cell, .display-cell:hover {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .display-cell span {
+        font-size:28px;
+    }
+
+    .display-cell em {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .box-style {
+        height: 90px;
+        margin-bottom: 15px;
+    }
+    
+    .display-cell, .display-cell:hover {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .display-cell span {
+        font-size:24px;
+    }
+
+    .display-cell em {
+        font-size: 24px;
+    }
+
+    .count{
+        text-align:right;
+    }
+
+
+	.logo {
+		margin-bottom: -70px;
+	}
+
+	.logo img {
+		width: 113px;
+
+	}
+
+	.band_black {
+		height: auto;
+	}
+
+	.date-style .input-group-addon {
+		font-size: 20px;
+	}
+
+	.date-style .input-group .form-control {
+		font-size: 20px;
+		margin: 0px;
+	}
+
+	.button_dtable {
+		height: 70px;
+	}
+
+	footer img {
+		width: 100px;
+	}
+
+	.band_black {
+		margin-bottom: 30px;
+	}
+
+	.buttonsty {
+		margin-top: 0px;
+	}
+
+
+
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+
+}
+
+@media (max-width: 479px) {
+	.login-box .btn {
+		width: 100%;
+	}
+
+}

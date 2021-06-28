@@ -1,0 +1,279 @@
+﻿"@{
+    ViewBag.Title = "Playland Dashboard";
+    Layout = "~/Views/Shared/_WebMasterLayoutCommon.cshtml";
+}
+
+
+
+<script>
+
+    var _dashboardOperations;
+    var _liveEventEnabled = false;
+    var _intervalId;
+    var counterInterval = 60;
+    var _counter = counterInterval;
+
+    var _startDate;
+    var _endDate;
+    var _typeId;
+
+    $(function () {
+        _dashboardOperations = new DashboardOperations();
+        var typeId = getUrlParameter("TypeId");
+        var st = getUrlParameter("sd");
+        var ed = getUrlParameter("ed");
+        if (typeId == "" || typeId=='') {
+            typeId = 0;
+        }
+
+        if (st == "" || st == '') {
+            st = '@DateTime.Now.ToString("dd.MM.yyyy")';
+        }
+
+        if (ed == "" || ed == '') {
+            ed = '@DateTime.Now.ToString("dd.MM.yyyy")';
+        }
+
+        $("#StartDate").val(st);
+        $("#EndDate").val(ed);
+        fnInitDashboard(typeId);
+
+
+        $("#uploadDetail").click(function () {
+            _dashboardOperations.getUploadDetail(_startDate, _endDate, _typeId);
+        })
+    })
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function fnInitDashboard(typeId) {
+
+        _startDate = getValue("StartDate");
+        _endDate = getValue("EndDate");
+        _typeId = typeId;
+        _dashboardOperations.getSummaries(_startDate, _endDate, _typeId);
+    }
+
+    function getSummary(typeId) {
+
+        if (_liveEventEnabled) {
+            clearInterval(_intervalId);
+        }
+        _liveEventEnabled = false;
+        //fnInitDashboard(typeId);
+
+        window.location.href = "?TypeId=" + typeId + "&sd=" + getValue("StartDate") + "&ed=" + getValue("EndDate");
+    }
+
+
+    function setLiveEvent() {
+
+        var startDate = '@DateTime.Now.ToString("dd.MM.yyyy")';
+        var endDate = '@DateTime.Now.ToString("dd.MM.yyyy")';
+
+        openDatePicker(startDate);
+        _counter = 0;
+
+        if (!_liveEventEnabled) {
+            $("#btnLive").removeClass("green").addClass("red");
+            //fnInitDashboard(0);
+        }
+        else {
+            $("#btnLive").removeClass("red").addClass("green");
+            _liveEventEnabled = false;
+            return;
+        }
+
+        _liveEventEnabled = true;
+
+        window.location.href = "?TypeId=" + getUrlParameter("TypeId") + "&sd=" + getValue("StartDate") + "&ed=" + getValue("EndDate");
+    }
+
+</script>
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><strong>Free Plays</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    @*<span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body" id="divModalContent">
+                &nbsp;
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="uploadDialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><strong>Yüklemeler</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    @*<span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
+            <div class="modal-body" id="uploadBody">
+                &nbsp;
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="band_black">
+    <div class="container">
+        <div class="pd-lr-150">
+            <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="date-style">
+                                <label>Başlangıç Tarihi</label>
+                                <div id="datePicker1" class="input-group date" data-date-format="mm-dd-yyyy">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" type="text" id="StartDate" value="" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="date-style">
+                                <label>Bitiş Tarihi</label>
+                                <div id="datePicker2" class="input-group date" data-date-format="mm-dd-yyyy">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" type="text" id="EndDate" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="button_dtable">
+                        <div style="display:table-cell; vertical-align: middle; ">
+                            <div class="row">
+                                <div class="col-md-10 col-sm-10 col-xs-10">
+                                    <a class="buttonsty blue" href="javascript:void(0);" onclick="getSummary(0);">Batum</a>
+                                    <a class="buttonsty red" href="javascript:void(0);" onclick="getSummary(1);">Tiflis</a>
+                                    <a class="buttonsty orange" href="javascript:void(0);" onclick="getSummary(2);">Kutaisi</a>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-2">
+                                    <a class="buttonsty green" href="javascript:void(0);" id="btnLive" onclick="getSummary(3)">All<i class="counter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="pd-lr-150">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style red">
+                    <a href="" class="display-cell">
+                        <span>ADET</span>
+                        <em><span class="count" id="gameCount">0</span></em>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style green">
+                    <a href="" class="display-cell">
+                        <span>HARCANAN</span>
+                        <em>
+                            <span class="count"
+                                  id="totalGameAmount">0</span>&nbsp;<img src="~/images/gurcistan_para.png" alt="">
+                        </em>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style purple2" style="margin:0px;">
+                    <a href="" class="display-cell">
+                        <span>YÜKLEME</span>
+                        <em><span class="count" id="totalTransaction">0</span>&nbsp;<img src="~/images/gurcistan_para.png" alt=""></em>
+                    </a>
+                </div>
+                <div class="box-style yellow">
+                    <a href="" class="display-cell">
+                        <span>BONUS</span>
+                        <em><span class="count" id="totalBonus">0</span>&nbsp;<img src="~/images/gurcistan_para.png" alt=""></em>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style blue">
+                    <a href="" class="display-cell" data-toggle="modal" data-target="#exampleModal">
+                        <span>FREE PLAY</span>
+                        <em><span class="count" id="freePlay">0</span>&nbsp;</em>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style purple">
+                    <a href="" class="display-cell">
+                        <span>Y.NAKİT</span>
+                        <em><span class="count" id="totalCash">0</span>&nbsp;<img src="~/images/gurcistan_para.png" alt=""></em>
+                    </a>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style orange">
+                    <a href="" class="display-cell">
+                        <span>Y.POS</span>
+                        <em><span class="count" id="totalCreditCard">0</span>&nbsp;<img src="~/images/gurcistan_para.png" alt=""></em>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style green2">
+                    <a href="javascript:void(0);" id="uploadDetail" class="display-cell">
+                        <span>Yükleme Adet</span>
+                        <em><span class="count" id="totalUploadQuantity">0</span></em>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="box-style red">
+                    <a href="javascript:void(0);" id="visitor" class="display-cell">
+                        <span>T.Ziyaretçi</span>
+                        <em><span class="count" id="totalVisitor">0</span></em>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
