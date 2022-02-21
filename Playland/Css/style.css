@@ -132,6 +132,16 @@ header {
         background-color: #f5821f;
     }
 
+.buttonsty.purple {
+    background-color: #8e44ad;
+}
+
+.buttonsty.purple:hover, .buttonsty.purple:active, .buttonsty.purple:focus {
+        color: #fff;
+        text-decoration: none;
+        background-color: #821dad;
+    }
+
 .box-style {
     height: 114px;
     display: table;

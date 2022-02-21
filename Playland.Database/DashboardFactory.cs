@@ -16,7 +16,7 @@ namespace Playland.Database
         {
             GenericResponse<Summary> genericResponse = new GenericResponse<Summary>();
 
-            if (typeId == 3)
+            if (typeId == 4)
             {
                 Summary summary = new Summary()
                 {
@@ -33,6 +33,7 @@ namespace Playland.Database
                         summary.TotalCreditCard += tempTransac.TotalCreditCard;
                         summary.TotalFreeGame += tempTransac.TotalFreeGame;
                         summary.TotalGameAmount += tempTransac.TotalGameAmount;
+                        summary.TotalGameCount += tempTransac.TotalGameCount;
                         summary.TotalTransaction += tempTransac.TotalTransaction;
                         summary.TotalUploadQuantity += tempTransac.TotalUploadQuantity;
                         summary.TotalVisitor += tempTransac.TotalVisitor;
