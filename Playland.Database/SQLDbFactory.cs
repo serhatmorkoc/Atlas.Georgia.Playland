@@ -32,7 +32,7 @@ namespace Playland.Database
             if (typeId == 2)
                 connectionString = ConfigurationManager.ConnectionStrings["KutaisiDbConnectionString"].ConnectionString;
             if (typeId == 3)
-                connectionString = ConfigurationManager.ConnectionStrings["BatumChineseDbConnectionString"].ConnectionString;
+                connectionString = ConfigurationManager.ConnectionStrings["LegendDbConnectionString"].ConnectionString;
         }
 
         private DataSet ExecuteDataSet(string commandText, List<SqlParameter> parameters)
