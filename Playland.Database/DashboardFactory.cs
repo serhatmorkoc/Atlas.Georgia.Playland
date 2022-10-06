@@ -24,22 +24,26 @@ namespace Playland.Database
                 };
                 for (int i = 0; i < typeId; i++)
                 {
-                    GenericResponse<Summary> summaryResponse = GetSummaries(startDate, endDate, i);
-                    if (summaryResponse.IsSucceed)
+                    if (i!=3)
                     {
-                        Summary tempTransac = summaryResponse.Result;
-                        summary.TotalBonus += tempTransac.TotalBonus;
-                        summary.TotalCashAmount += tempTransac.TotalCashAmount;
-                        summary.TotalCreditCard += tempTransac.TotalCreditCard;
-                        summary.TotalFreeGame += tempTransac.TotalFreeGame;
-                        summary.TotalGameAmount += tempTransac.TotalGameAmount;
-                        summary.TotalGameCount += tempTransac.TotalGameCount;
-                        summary.TotalTransaction += tempTransac.TotalTransaction;
-                        summary.TotalUploadQuantity += tempTransac.TotalUploadQuantity;
-                        summary.TotalVisitor += tempTransac.TotalVisitor;
+                        GenericResponse<Summary> summaryResponse = GetSummaries(startDate, endDate, i);
+                        if (summaryResponse.IsSucceed)
+                        {
+                            Summary tempTransac = summaryResponse.Result;
+                            summary.TotalBonus += tempTransac.TotalBonus;
+                            summary.TotalCashAmount += tempTransac.TotalCashAmount;
+                            summary.TotalCreditCard += tempTransac.TotalCreditCard;
+                            summary.TotalFreeGame += tempTransac.TotalFreeGame;
+                            summary.TotalGameAmount += tempTransac.TotalGameAmount;
+                            summary.TotalGameCount += tempTransac.TotalGameCount;
+                            summary.TotalTransaction += tempTransac.TotalTransaction;
+                            summary.TotalUploadQuantity += tempTransac.TotalUploadQuantity;
+                            summary.TotalVisitor += tempTransac.TotalVisitor;
 
-                        summary.CardPlays.AddRange(tempTransac.CardPlays);
+                            summary.CardPlays.AddRange(tempTransac.CardPlays);
+                        }
                     }
+                    
                 }
 
                 genericResponse.IsSucceed = true;
